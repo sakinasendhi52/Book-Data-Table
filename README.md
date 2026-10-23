@@ -2,504 +2,447 @@
 
 # 📚 Project: Book Management System API
 
-**A Node.js and Express REST API for managing books with MongoDB, CRUD operations, book-cover image uploads, input validation, and ISBN uniqueness checks.**
+**A RESTful Book Management System built using Node.js, Express.js, MongoDB, and Mongoose, featuring CRUD operations, book-cover image uploads, request validation, and Postman API testing.**
 
 </div>
 
 ---
 
-## 🧭 Table of Contents
+## 📑 Table of Contents
 
-- [Project Description](#project-description)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [How It Works](#how-it-works)
-- [Book Data Model](#book-data-model)
-- [Form Validation](#form-validation)
-- [CRUD Operations](#crud-operations)
-- [API Endpoints](#api-endpoints)
-- [Example Requests](#example-requests)
-- [Project Structure](#project-structure)
-- [Environment Variables](#environment-variables)
-- [Installation and Setup](#installation-and-setup)
-- [Running the Project](#running-the-project)
-- [Error Handling](#error-handling)
-- [Screenshots](#screenshots)
-- [Explanation Video](#explanation-video)
-- [Screen Recording](#screen-recording)
-- [Author](#author)
+* [Project Description](#-project-description)
+* [Features](#-features)
+* [Technologies Used](#-technologies-used)
+* [How This Project Works](#-how-this-project-works)
+* [CRUD Operations](#-crud-operations)
+* [API Endpoints](#-api-endpoints)
+* [Book Schema](#-book-schema)
+* [Form Validation](#-form-validation)
+* [Image Uploads](#-image-uploads)
+* [Project Structure](#-project-structure)
+* [Installation and Setup](#-installation-and-setup)
+* [Environment Variables](#-environment-variables)
+* [Testing with Postman](#-testing-with-postman)
+* [Screenshots](#-screenshots)
+* [Error Handling](#-error-handling)
 
 ---
 
 ## 📌 Project Description
 
-The **Book Management System API** is a backend application built with Node.js, Express, and MongoDB. It provides REST API endpoints to add, display, update, and delete book records.
+The **Book Management System API** is a backend application developed using Node.js, Express.js, MongoDB, and Mongoose.
 
-Each book includes details such as its title, author, publisher, price, published year, ISBN, quantity, description, category, number of pages, and cover image.
+The application provides REST API endpoints to create, retrieve, update, and delete book records.
 
-MongoDB stores the book records, while Mongoose defines the book schema and communicates with the database. Multer handles book-cover uploads, and uploaded images are stored in the `uploads/` directory and served as static files.
+Each book contains information such as its title, author, publisher, price, published year, ISBN, quantity, description, category, number of pages, and book-cover image.
 
-The API also uses `express-validator` to validate book data when a new book is added.
+The project uses **Multer** to handle image uploads, **express-validator** to validate book information, and **MongoDB** to store book records.
+
+Postman is used to test the API endpoints and verify their responses.
 
 ---
 
 ## ✨ Features
 
-- Add a new book
-
-- Retrieve all books
-
-- Update an existing book
-
-- Delete a book
-
-- Upload a book-cover image
-
-- Serve uploaded images through the `/uploads` path
-
-- Validate book fields when adding a book
-
-- Enforce unique ISBN values in MongoDB
-
-- Return appropriate HTTP status codes for common errors
-
-- Validate MongoDB ObjectId values before update and delete operations
-
-- Delete a book's cover image when the book is deleted
-
-- Replace an existing cover image when a new one is uploaded
-
-- Store creation and update timestamps using Mongoose
+* Add a new book.
+* Display all available books.
+* Update existing book information.
+* Delete a book from the database.
+* Upload book-cover images using Multer.
+* Store book information in MongoDB.
+* Validate book information before adding records.
+* Prevent duplicate ISBN values.
+* Validate MongoDB ObjectId values for update and delete operations.
+* Automatically maintain creation and update timestamps.
+* Replace existing book-cover images.
+* Delete cover images when deleting books.
+* Serve uploaded images through Express static middleware.
+* Return JSON responses with appropriate HTTP status codes.
+* Test API operations using Postman.
 
 ---
 
 ## 🔧 Technologies Used
 
-### Backend
+### Backend Technologies
 
-- Node.js
-
-- Express.js
-
-- MongoDB
-
-- Mongoose
-
-- Multer
-
-- express-validator
-
-- dotenv
-
-### Node.js Built-in Modules
-
-- `path` — handles file and directory paths
-
-- `fs` — handles cover-image file deletion
+| Technology        | Purpose                                |
+| ----------------- | -------------------------------------- |
+| Node.js           | JavaScript runtime environment         |
+| Express.js        | REST API development                   |
+| MongoDB           | NoSQL database                         |
+| Mongoose          | MongoDB schema and database operations |
+| Multer            | Handling file uploads                  |
+| express-validator | Request data validation                |
+| dotenv            | Loading environment variables          |
+| fs                | File-system operations                 |
+| path              | Handling file paths                    |
 
 ### Development Tools
 
-- npm
-
-- Postman (for API testing)
-
----
-
-## ⚙️ How It Works
-
-### 1. Add a Book
-
-**Endpoint:** `POST /add-book`
-
-The API accepts book details and a cover image using `multipart/form-data`.
-
-The request is validated before the book is saved. If the required cover image is missing, the API returns a `400 Bad Request` response. If the ISBN already exists, it returns `409 Conflict`.
-
-On success, the API returns the new book's MongoDB ID.
-
-### 2. Display Books
-
-**Endpoint:** `GET /display-books`
-
-The API retrieves all books from MongoDB, sorts them from newest to oldest using `createdAt`, excludes the Mongoose `\_\_v` field, and returns the total count with the book data.
-
-### 3. Update a Book
-
-**Endpoint:** `PUT /update-book/:id`
-
-The API finds the book by its MongoDB ID and updates only the fields included in the request. A new cover image is optional. If a new image is uploaded, the API saves the updated book first and then attempts to delete the old cover image.
-
-### 4. Delete a Book
-
-**Endpoint:** `DELETE /delete-book/:id`
-
-The API validates the ID, checks that the book exists, and deletes its cover image if one is associated with the record. It then deletes the book record from MongoDB.
-
-### 5. Home Route
-
-**Endpoint:** `GET /`
-
-Returns the text `Home Page` to confirm that the server is responding.
+* Postman
+* npm
+* Visual Studio Code
 
 ---
 
-## 📖 Book Data Model
+## ⚙️ How This Project Works
 
-The `Book` model is defined in `models/Book.js`.
+The application follows a simple client-server architecture.
 
-| Field | Type | Rules |
-
-|---|---|---|
-
-| `title` | String | Required; trimmed |
-
-| `author` | String | Required; trimmed |
-
-| `publisher` | String | Required |
-
-| `price` | Number | Required; minimum `0` |
-
-| `publishedYear` | Number | Required |
-
-| `isbn` | String | Required; unique |
-
-| `quantity` | Number | Required; minimum `0`; defaults to `1` |
-
-| `description` | String | Required |
-
-| `category` | String | Required; must be an allowed category |
-
-| `pages` | Number | Required; minimum `0` in the schema |
-
-| `bookCover` | String | Required |
-
-| `createdAt` | Date | Automatically generated |
-
-| `updatedAt` | Date | Automatically generated |
-
-Allowed categories:
-
-- `Novel`
-
-- `Education`
-
-- `Technology`
-
-- `History`
-
-- `Biography`
-
-- `Fiction`
-
-The schema uses Mongoose timestamps, so `createdAt` and `updatedAt` are maintained automatically.
-
----
-
-## 📝 Form Validation
-
-The `POST /add-book` route uses `express-validator` to validate the submitted book details.
-
-| Field | Validation |
-
-|---|---|
-
-| `title` | Required; maximum 200 characters |
-
-| `author` | Required; maximum 100 characters |
-
-| `publisher` | Required |
-
-| `price` | Required; numeric value greater than or equal to `0` |
-
-| `publishedYear` | Required; integer from `1` through the current year |
-
-| `isbn` | Required; matches the configured ISBN-10 or ISBN-13 pattern |
-
-| `quantity` | Optional in the request; if supplied, must be a non-negative integer |
-
-| `description` | Required |
-
-| `category` | Required; must be one of the six allowed categories |
-
-| `pages` | Required; positive integer |
-
-| `bookCover` | Required file; checked by the route handler |
-
-When validation fails, the API returns `400 Bad Request` with a message and an array of field-level errors.
-
-**Note:** In the current code, these `express-validator` rules are attached to the add-book route. The update route does not use the same validation middleware.
+1. A client sends an HTTP request to an Express API endpoint.
+2. Express processes the request using the configured middleware.
+3. Multer handles book-cover uploads when required.
+4. The validation middleware checks submitted book information when adding a book.
+5. Mongoose interacts with MongoDB to perform database operations.
+6. Express returns a JSON response to the client.
+7. Uploaded images are saved in the `uploads/` directory and served through the `/uploads` route.
 
 ---
 
 ## 🔄 CRUD Operations
 
-| Operation | HTTP Method | Endpoint | Purpose |
+The application supports all four major CRUD operations.
 
-|---|---|---|---|
-
-| Create | `POST` | `/add-book` | Add a book and upload its cover |
-
-| Read | `GET` | `/display-books` | Retrieve all books |
-
-| Update | `PUT` | `/update-book/:id` | Update supplied book fields and optionally replace its cover |
-
-| Delete | `DELETE` | `/delete-book/:id` | Delete a book and its cover image |
-
-| Home | `GET` | `/` | Return a basic home-page response |
+| Operation | HTTP Method | Endpoint           | Description             |
+| --------- | ----------- | ------------------ | ----------------------- |
+| Create    | POST        | `/add-book`        | Add a new book          |
+| Read      | GET         | `/display-books`   | Retrieve all books      |
+| Update    | PUT         | `/update-book/:id` | Update an existing book |
+| Delete    | DELETE      | `/delete-book/:id` | Delete a book           |
 
 ---
 
-## 🛣️ API Endpoints
+## 🌐 API Endpoints
 
-Assuming the server is running locally on port `3000`:
+The examples below use `http://localhost:3000` as the base URL. Replace `3000` with the port configured in your `.env` file if necessary.
 
-| Method | URL | Body | Success Response |
+### 1. Add Book
 
-|---|---|---|---|
+**Endpoint**
 
-| `GET` | `http://localhost:3000/` | None | `Home Page` |
+`POST /add-book`
 
-| `POST` | `http://localhost:3000/add-book` | `multipart/form-data` | `201 Created` with message and book ID |
+**Full URL**
 
-| `GET` | `http://localhost:3000/display-books` | None | `200 OK` with count and book data |
+`http://localhost:3000/add-book`
 
-| `PUT` | `http://localhost:3000/update-book/:id` | Form fields; optional cover file | `200 OK` with updated book |
+This endpoint adds a new book to the MongoDB database.
 
-| `DELETE` | `http://localhost:3000/delete-book/:id` | None | `200 OK` confirmation |
+Select **Body → form-data** in Postman.
 
-Replace `:id` with the `\_id` of the book in MongoDB. The example port is only illustrative; the application uses the `PORT` environment variable.
+| Field           | Type | Required | Description                       |
+| --------------- | ---- | -------- | --------------------------------- |
+| `title`         | Text | Yes      | Book title                        |
+| `author`        | Text | Yes      | Author name                       |
+| `publisher`     | Text | Yes      | Publisher name                    |
+| `price`         | Text | Yes      | Book price                        |
+| `publishedYear` | Text | Yes      | Year of publication               |
+| `isbn`          | Text | Yes      | ISBN-10 or ISBN-13                |
+| `quantity`      | Text | No       | Available quantity; defaults to 1 |
+| `description`   | Text | Yes      | Book description                  |
+| `category`      | Text | Yes      | Book category                     |
+| `pages`         | Text | Yes      | Number of pages                   |
+| `bookCover`     | File | Yes      | Book-cover image                  |
 
-### Book Cover URL
+**Example success response**
 
-Uploaded images are served from:
+HTTP status: `201 Created`
+
+```json
+{
+  "message": "Book Added",
+  "id": "YOUR_CREATED_BOOK_ID"
+}
+```
+
+The response contains the ID of the newly created book.
+
+If the ISBN already exists, the API returns `409 Conflict`.
+
+### 2. Display Books
+
+**Endpoint**
+
+`GET /display-books`
+
+**Full URL**
+
+`http://localhost:3000/display-books`
+
+This endpoint retrieves all books stored in MongoDB.
+
+The results are sorted by `createdAt` in descending order, so the newest records appear first.
+
+The `__v` field is excluded from the response.
+
+**Example response**
+
+```json
+{
+  "count": 1,
+  "data": [
+    {
+      "_id": "YOUR_BOOK_ID",
+      "title": "Example Book",
+      "author": "Example Author",
+      "publisher": "Example Publisher",
+      "price": 250,
+      "publishedYear": 2024,
+      "isbn": "9781234567890",
+      "quantity": 1,
+      "description": "An example book description.",
+      "category": "Technology",
+      "pages": 250,
+      "bookCover": "1720000000000.jpg",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+*Note: The example data is illustrative. Your actual response depends on the records stored in MongoDB.*
+
+### 3. Update Book
+
+**Endpoint**
+
+`PUT /update-book/:id`
+
+**Example URL**
+
+`http://localhost:3000/update-book/YOUR_BOOK_ID`
+
+This endpoint updates an existing book using its MongoDB ObjectId.
+
+The request can update individual fields without requiring every book field to be submitted.
+
+To replace the cover image, include `bookCover` as a file in the Postman `form-data` body. If no new image is uploaded, the existing cover is retained.
+
+When a new cover is uploaded, the application saves the updated book before attempting to remove the previous cover image.
+
+**Example response**
+
+```json
+{
+  "message": "Book updated successfully",
+  "data": {
+    "_id": "YOUR_BOOK_ID",
+    "title": "Updated Book Title"
+  }
+}
+```
+
+The `data` field contains the saved book document. The example above is abbreviated.
+
+### 4. Delete Book
+
+**Endpoint**
+
+`DELETE /delete-book/:id`
+
+**Example URL**
+
+`http://localhost:3000/delete-book/YOUR_BOOK_ID`
+
+This endpoint deletes a book from MongoDB.
+
+The application:
+
+1. Validates the MongoDB ObjectId.
+2. Checks whether the book exists.
+3. Attempts to delete the associated cover image.
+4. Deletes the book record from MongoDB.
+5. Returns a JSON response.
+
+**Example response**
+
+```json
+{
+  "message": "Book and cover image deleted successfully"
+}
+```
+
+If the book has no cover image, the API returns:
+
+```json
+{
+  "message": "Book deleted successfully"
+}
+```
+
+---
+
+## 📚 Book Schema
+
+The Mongoose schema is defined in `models/Book.js`.
+
+| Field           | Data Type | Validation                                 |
+| --------------- | --------- | ------------------------------------------ |
+| `title`         | String    | Required, trimmed                          |
+| `author`        | String    | Required, trimmed                          |
+| `publisher`     | String    | Required                                   |
+| `price`         | Number    | Required, minimum 0                        |
+| `publishedYear` | Number    | Required                                   |
+| `isbn`          | String    | Required, unique                           |
+| `quantity`      | Number    | Required, minimum 0, default 1             |
+| `description`   | String    | Required                                   |
+| `category`      | String    | Required, restricted to allowed categories |
+| `pages`         | Number    | Required, minimum 0                        |
+| `bookCover`     | String    | Required                                   |
+| `createdAt`     | Date      | Automatically generated                    |
+| `updatedAt`     | Date      | Automatically updated                      |
+
+The schema uses Mongoose timestamps:
+
+```javascript
+{
+    timestamps: true
+}
+```
+
+This automatically maintains the `createdAt` and `updatedAt` fields.
+
+### Supported Book Categories
+
+The application supports the following categories:
+
+* Novel
+* Education
+* Technology
+* History
+* Biography
+* Fiction
+
+---
+
+## 📝 Form Validation
+
+The project uses `express-validator` to validate book information when adding a new book.
+
+### Validation Rules
+
+| Field          | Validation                                                           |
+| -------------- | -------------------------------------------------------------------- |
+| Title          | Required; maximum 200 characters                                     |
+| Author         | Required; maximum 100 characters                                     |
+| Publisher      | Required                                                             |
+| Price          | Required; numeric value greater than or equal to 0                   |
+| Published Year | Required; integer between 1 and the current year                     |
+| ISBN           | Required; must match the configured ISBN-10 or ISBN-13 format        |
+| Quantity       | Optional in the request; if provided, must be a non-negative integer |
+| Description    | Required                                                             |
+| Category       | Must match one of the six supported categories                       |
+| Pages          | Required; positive integer                                           |
+| Book Cover     | Required for adding a book                                           |
+
+If validation fails, the API returns `400 Bad Request`.
+
+**Example validation response**
+
+```json
+{
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "title",
+      "message": "Title is required."
+    }
+  ]
+}
+```
+
+The error response contains the field name and its corresponding validation message.
+
+The configured ISBN rule checks the format of the ISBN but does not verify its checksum digits.
+
+**Note:** The `bookRules` middleware is applied to the add-book endpoint. The update endpoint does not use these express-validator rules, although Mongoose schema validation runs when the document is saved.
+
+---
+
+## 🖼️ Image Uploads
+
+The project uses **Multer** to upload book-cover images.
+
+### Image Storage
+
+Uploaded images are stored in:
 
 ```text
-
-http://localhost:3000/uploads/<filename>
-
+uploads/
 ```
 
-Replace `<filename>` with the stored `bookCover` filename and use the actual configured port.
+Multer generates filenames using the current timestamp and the original file extension.
 
----
+For example:
 
-## 🧪 Example Requests
-
-### Add a Book
-
-In Postman:
-
-1\. Select **POST**.
-
-2\. Enter `http://localhost:3000/add-book`.
-
-3\. Open **Body → form-data**.
-
-4\. Add the following text fields.
-
-5\. Add `bookCover` as a **File** field and select an image.
-
-| Key | Example Value | Type |
-
-|---|---|---|
-
-| `title` | The Example Book | Text |
-
-| `author` | Alex Writer | Text |
-
-| `publisher` | Example Publishing | Text |
-
-| `price` | `499.99` | Text |
-
-| `publishedYear` | `2024` | Text |
-
-| `isbn` | `9781234567897` | Text |
-
-| `quantity` | `5` | Text |
-
-| `description` | An example book description. | Text |
-
-| `category` | Technology | Text |
-
-| `pages` | `250` | Text |
-
-| `bookCover` | Choose an image file | File |
-
-Example success response:
-
-```json
-
-{
-
-  "message": "Book Added",
-
-  "id": "YOUR_CREATED_BOOK_ID"
-
-}
-
+```text
+1720000000000.jpg
 ```
 
-The example values are illustrative. Use an ISBN that passes the configured pattern and is not already present in your database.
+The generated filename is stored in the `bookCover` field in MongoDB.
 
-### Display All Books
+### Accessing Uploaded Images
 
-**Request**
+The application serves the uploads directory through Express static middleware:
 
-```http
-
-GET /display-books
-
+```javascript
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 ```
 
-Example response shape:
+A cover image can therefore be accessed using a URL such as:
 
-```json
-
-{
-
-  "count": 1,
-
-  "data": [
-
-    {
-
-      "\_id": "YOUR_BOOK_ID",
-
-      "title": "The Example Book",
-
-      "author": "Alex Writer",
-
-      "publisher": "Example Publishing",
-
-      "price": 499.99,
-
-      "publishedYear": 2024,
-
-      "isbn": "9781234567897",
-
-      "quantity": 5,
-
-      "description": "An example book description.",
-
-      "category": "Technology",
-
-      "pages": 250,
-
-      "bookCover": "YOUR_COVER_FILENAME.jpg",
-
-      "createdAt": "2026-01-01T00:00:00.000Z",
-
-      "updatedAt": "2026-01-01T00:00:00.000Z"
-
-    }
-
-  ]
-
-}
-
+```text
+http://localhost:3000/uploads/1720000000000.jpg
 ```
 
-The ID, filename, and timestamps above are placeholders for illustration.
+Replace the example filename with the actual filename stored in your database.
 
-### Update a Book
-
-**Request**
-
-```http
-
-PUT /update-book/YOUR_BOOK_ID
-
-```
-
-Send the fields you want to change. The route accepts the updated fields in the request body and can also accept a new `bookCover` file. In Postman, use **Body → form-data** when uploading a cover.
-
-### Delete a Book
-
-**Request**
-
-```http
-
-DELETE /delete-book/YOUR_BOOK_ID
-
-```
-
-Replace `YOUR_BOOK_ID` with an existing MongoDB book ID.
+The current Multer configuration does not specify file-size or file-type restrictions. These should be added before deploying the application to production.
 
 ---
 
 ## 📂 Project Structure
 
-The following structure is based on the files shown in the project explorer:
-
 ```text
-
-book-management/
-
+book-management-system/
 │
-
 ├── .postman/
-
-│   └── resources.yaml
-
 │
-
 ├── models/
-
-│   └── Book.js
-
+│   └── Book.js
 │
-
 ├── node_modules/
-
 │
-
+├── output/
+│   ├── addBook.png
+│   ├── deleteBook.png
+│   ├── displayBook.png
+│   ├── mongoDB.png
+│   └── updateBook.png
+│
 ├── postman/
-
 │
-
 ├── uploads/
-
-│   ├── <uploaded-cover-image>.jpg
-
-│   ├── <uploaded-cover-image>.webp
-
-│   └── ...
-
+│   └── Book cover images
 │
-
 ├── .env
-
 ├── app.js
-
-├── package-lock.json
-
 ├── package.json
-
+├── package-lock.json
 └── README.md
-
 ```
 
-The image filenames shown above are illustrative. The `uploads/` directory contains the cover images saved by Multer. `node_modules/` is installed locally and generally should not be committed to version control.
+### Important Files and Folders
 
----
-
-## 🔐 Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-
-PORT=3000
-
-MONGO_URI=mongodb://127.0.0.1:27017/book-management
-
-```
-
-- `PORT` — port on which the Express server listens.
-
-- `MONGO_URI` — MongoDB connection string.
-
-The MongoDB URI above is an example for a local database. Replace it with your own connection string if needed. Do not commit credentials or secrets to a public repository.
+* **`app.js`** — Configures Express, connects to MongoDB, defines middleware, and implements the API routes.
+* **`models/Book.js`** — Defines the Mongoose book schema and its validation rules.
+* **`uploads/`** — Stores uploaded book-cover images.
+* **`output/`** — Contains screenshots of API operations and the MongoDB database.
+* **`.env`** — Stores environment variables such as the port and MongoDB connection URI.
+* **`package.json`** — Contains project metadata, dependencies, and any configured npm scripts.
+* **`postman/`** — Project folder for Postman-related files, if present.
 
 ---
 
@@ -507,141 +450,175 @@ The MongoDB URI above is an example for a local database. Replace it with your o
 
 ### Prerequisites
 
-Install Node.js and npm, and make sure MongoDB is available either locally or through a hosted MongoDB service.
+Install the following tools before running the project:
 
-### 1. Clone or Download the Project
+* Node.js
+* npm
+* MongoDB
+* Postman (for API testing)
 
-Open a terminal in the project directory.
+### Step 1: Open the Project
 
-### 2. Install Dependencies
+Open the project directory in Visual Studio Code or your preferred editor.
+
+### Step 2: Install Dependencies
+
+Run:
 
 ```bash
-
 npm install
-
 ```
 
-The application uses these main packages:
+If the dependencies are not already listed in `package.json`, install the packages used by the application:
 
 ```bash
-
 npm install express mongoose multer dotenv express-validator
-
 ```
 
-If the dependencies are already listed in `package.json`, running `npm install` is sufficient.
+### Step 3: Configure Environment Variables
 
-### 3. Configure Environment Variables
+Create or update the `.env` file in the project root.
 
-Create and configure the `.env` file as described above.
-
-### 4. Ensure the Upload Directory Exists
-
-Make sure an `uploads/` directory exists in the project root. Multer is configured to save uploaded files there.
-
----
-
-## ▶️ Running the Project
-
-Start the server with:
-
-```bash
-
-node app.js
-
+```env
+PORT=3000
+MONGO_URI=mongodb://127.0.0.1:27017/bookManagement
 ```
 
-If a start script is configured in `package.json`, you can use:
+These are example values. Use your own MongoDB connection URI and an available port.
+
+### Step 4: Ensure the Upload Directory Exists
+
+Make sure the `uploads/` directory exists before submitting requests that upload images.
+
+### Step 5: Start the Application
+
+If your `package.json` contains a suitable start script, run:
 
 ```bash
-
 npm start
-
 ```
 
-The second command works only if the package's `scripts` section defines a `start` script.
+Otherwise, start the server directly:
+
+```bash
+node app.js
+```
+
+The server uses the `PORT` environment variable.
 
 When the database connection succeeds, the application logs:
 
 ```text
-
 Connected Successfully!
-
 ```
 
-When the Express server starts, it logs the local URL using the configured port.
-
-Test the endpoints with Postman or another API client.
+The server also logs its local URL when it starts.
 
 ---
 
-## ⚠️ Error Handling
+## 🔐 Environment Variables
 
-The API uses HTTP status codes to indicate success or failure.
+The application uses `dotenv` to read environment variables from `.env`.
 
-| Status Code | Meaning | Example |
+| Variable    | Purpose                         | Example                                    |
+| ----------- | ------------------------------- | ------------------------------------------ |
+| `PORT`      | Port used by the Express server | `3000`                                     |
+| `MONGO_URI` | MongoDB connection URI          | `mongodb://127.0.0.1:27017/bookManagement` |
 
-|---|---|---|
+**Security reminder:** Do not publish database credentials or other secrets. Keep `.env` private and add it to `.gitignore`.
 
-| `200 OK` | Request completed | Books fetched, updated, or deleted |
+---
 
-| `201 Created` | Resource created | Book added successfully |
+## 🧪 Testing with Postman
 
-| `400 Bad Request` | Invalid input | Validation failure or invalid book ID |
+Postman can be used to test all four CRUD operations.
 
-| `404 Not Found` | Resource not found | Book ID does not exist |
+### Add Book
 
-| `409 Conflict` | Duplicate value | ISBN already exists |
+1. Create a new request.
+2. Select `POST`.
+3. Enter `http://localhost:3000/add-book`.
+4. Select **Body → form-data**.
+5. Add the required book fields.
+6. Set `bookCover` to the **File** type and select an image.
+7. Send the request and inspect the response.
 
-| `500 Internal Server Error` | Unexpected server or database error | Failed database operation |
+### Display Books
+
+1. Create a new request.
+2. Select `GET`.
+3. Enter `http://localhost:3000/display-books`.
+4. Send the request.
+5. Inspect the returned book records.
+
+### Update Book
+
+1. Copy a book's `_id` from the display-books response.
+2. Select `PUT`.
+3. Enter `http://localhost:3000/update-book/YOUR_BOOK_ID`.
+4. Submit the fields you want to update using `form-data`.
+5. Include a new `bookCover` file only if you want to replace the existing cover.
+6. Send the request and verify the updated record.
+
+### Delete Book
+
+1. Copy the `_id` of the book you want to delete.
+2. Select `DELETE`.
+3. Enter `http://localhost:3000/delete-book/YOUR_BOOK_ID`.
+4. Send the request.
+5. Verify the response and check that the book is no longer returned by the display-books endpoint.
 
 ---
 
 ## 📸 Screenshots
 
-Add screenshots of the project or API responses here. Upload image files to the repository (for example, in a `screenshots/` folder), then update the paths below.
+The following screenshots are available in the project's `output/` folder.
 
-<!-- Replace these placeholders with your actual screenshot paths. -->
+### ➕ Add Book
 
-- **API testing in Postman:** `screenshots/postman-api.png`
-- **Book data in MongoDB:** `screenshots/mongodb-books.png`
-- **Uploaded book cover:** `screenshots/book-cover.png`
+![Add Book API](output/addBook.png)
 
-Example Markdown image syntax:
+### 📚 Display Books
 
-```markdown
-![API testing in Postman](screenshots/postman-api.png)
-```
+![Display Books API](output/displayBook.png)
 
----
+### ✏️ Update Book
 
-## 🎬 Explanation Video
+![Update Book API](output/updateBook.png)
 
-Add a link to a video explaining the project architecture, API endpoints, validation, and database integration.
+### 🗑️ Delete Book
 
-**Video link:** `Add your explanation video URL here`
+![Delete Book API](output/deleteBook.png)
 
----
+### 🍃 MongoDB Database
 
-## 🖥️ Screen Recording
-
-Add a screen recording demonstrating the application workflow, such as starting the server and testing the add, display, update, and delete endpoints.
-
-**Screen recording link:** `Add your screen recording URL here`
+![MongoDB Book Collection](output/mongoDB.png)
 
 ---
 
-## 👤 Author
+## ⚠️ Error Handling
 
-**Author name:** `Sakina Mufaddal Sendhi`
+The API returns JSON responses for successful operations and common errors.
 
-- GitHub: `Add your GitHub profile URL`
-- Email/Contact: `Add your preferred contact information (optional)`
+| HTTP Status                 | Meaning                                               |
+| --------------------------- | ----------------------------------------------------- |
+| `200 OK`                    | Request completed successfully                        |
+| `201 Created`               | Book created successfully                             |
+| `400 Bad Request`           | Invalid book ID, missing cover, or validation failure |
+| `404 Not Found`             | Book not found                                        |
+| `409 Conflict`              | ISBN already exists                                   |
+| `500 Internal Server Error` | Database or server operation failed                   |
+
+The application uses `try...catch` blocks to handle errors during database operations and returns an appropriate response to the client.
 
 ---
 
 <div align="center">
 
-⭐ Thank you for visiting this repository!
+## 📚 Book Management System API
+
+**Built with Node.js, Express.js, MongoDB, and Mongoose.**
+
+⭐ Thank you for visiting this project!
 
 </div>
