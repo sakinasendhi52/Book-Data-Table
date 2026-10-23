@@ -1,0 +1,13 @@
+{
+  title: "Verity",
+  author: "Colleen Hoover",
+  publisher: "Grand Central Publishing",
+  price: 899,
+  publishedYear: 2018,
+  isbn: "9781538724736",
+  quantity: 15,
+  description: "Verity is a psychological thriller about Lowen Ashleigh, a struggling writer hired to complete a successful book series for bestselling author Verity Crawford. While reviewing Verity's notes, Lowen discovers a disturbing unpublished autobiography that reveals shocking secrets about the Crawford family.",
+  category: "Fiction",
+  pages: 336,
+  bookCover: "https://images-na.ssl-images-amazon.com/images/I/91SDZ2eUj+L.jpg"
+}

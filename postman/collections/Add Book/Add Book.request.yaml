@@ -1,0 +1,64 @@
+$kind: http-request
+description: ""
+url: http://localhost:8000/add-book
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: title
+      value: Harry Potter and the Philosopher's Stone
+      description: ""
+      disabled: false
+    - type: text
+      key: author
+      value: J. K. Rowling
+      description: ""
+      disabled: false
+    - type: text
+      key: publisher
+      value: Bloomsbury
+      description: ""
+      disabled: false
+    - type: text
+      key: price
+      value: "399"
+      description: ""
+      disabled: false
+    - type: text
+      key: publishedYear
+      value: "1997"
+      description: ""
+      disabled: false
+    - type: text
+      key: isbn
+      value: "9780747532699"
+      description: ""
+      disabled: false
+    - type: text
+      key: quantity
+      value: "25"
+      description: ""
+      disabled: false
+    - type: text
+      key: description
+      value: A young wizard discovers his magical abilities and begins his education at Hogwarts School of Witchcraft and Wizardry.
+      description: ""
+      disabled: false
+    - type: text
+      key: category
+      value: Fiction
+      description: ""
+      disabled: false
+    - type: text
+      key: pages
+      value: "223"
+      description: ""
+      disabled: false
+    - type: file
+      key: bookCover
+      src:
+        - postman-cloud:///1f1cd355-200c-4920-8b37-e53f6ea40506
+      description: ""
+      disabled: false
+order: 1000
