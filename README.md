@@ -25,6 +25,8 @@
 * [Testing with Postman](#-testing-with-postman)
 * [Screenshots](#-screenshots)
 * [Error Handling](#-error-handling)
+* [Demo](#-demo)
+* [Author](#-author)
 
 ---
 
@@ -86,7 +88,7 @@ Postman is used to test the API endpoints and verify their responses.
 
 ---
 
-## ⚙️ How This Project Works
+## 📝 How This Project Works
 
 The application follows a simple client-server architecture.
 
@@ -361,7 +363,7 @@ The configured ISBN rule checks the format of the ISBN but does not verify its c
 
 ---
 
-## 🖼️ Image Uploads
+## 📂 Image Uploads
 
 The project uses **Multer** to upload book-cover images.
 
@@ -525,8 +527,6 @@ The application uses `dotenv` to read environment variables from `.env`.
 | `PORT`      | Port used by the Express server | `3000`                                     |
 | `MONGO_URI` | MongoDB connection URI          | `mongodb://127.0.0.1:27017/bookManagement` |
 
-**Security reminder:** Do not publish database credentials or other secrets. Keep `.env` private and add it to `.gitignore`.
-
 ---
 
 ## 🧪 Testing with Postman
@@ -596,7 +596,7 @@ The following screenshots are available in the project's `output/` folder.
 
 ---
 
-## ⚠️ Error Handling
+## 🔄 Error Handling
 
 The API returns JSON responses for successful operations and common errors.
 
@@ -613,12 +613,23 @@ The application uses `try...catch` blocks to handle errors during database opera
 
 ---
 
+## 🎬 Demo
+
+|                        |                                    |
+| ---------------------- | ---------------------------------- |
+| 💻 Project Video | [Blog Website Recording](https://drive.google.com/file/d/1eCjIPuZbv4TaAToJyPmWJZUgWiXq4hhH/view?usp=sharing)    |
+| 🎥 Project Explanation | [Blog Website Explanation](https://drive.google.com/file/d/1J8ZybwAQ_ITJRvAhLHb8nEfHDFpK6y79/view?usp=sharing) |
+
+---
+
+## 💻 Author
+
 <div align="center">
 
-## 📚 Book Management System API
+**Sakina Mufaddal Sendhi**
 
-**Built with Node.js, Express.js, MongoDB, and Mongoose.**
+[![GitHub](https://img.shields.io/badge/GitHub-sakinasendhi52-181717?style=for-the-badge\&logo=github)](https://github.com/sakinasendhi52)
 
-⭐ Thank you for visiting this project!
+⭐ Thank you for visiting this repository!
 
 </div>
