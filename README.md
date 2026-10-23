@@ -616,6 +616,7 @@ The application uses `try...catch` blocks to handle errors during database opera
 ## 🎬 Demo
 
 |                        |                                    |
+| ---------------------- | ---------------------------------- |
 | 💻 Project Video | [Book Management Recording](https://drive.google.com/file/d/1d7IhVdulnwQ8YB-OmAswKvfjOt-IU6jw/view?usp=sharing)    |
 | 🎥 Project Explanation | [Book Management Explanation](https://drive.google.com/file/d/12k8y3yPl_T0irZlFn8kft3APxwmJwI2Z/view?usp=sharing) |
 
